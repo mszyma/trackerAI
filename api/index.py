@@ -1,13 +1,15 @@
-import os
-
-from flask import Flask
+from flask import Flask, request, jsonify
+from langchain.agents import create_csv_agent
 from langchain.llms import OpenAI
 
 app = Flask(__name__)
+agent = create_csv_agent(OpenAI(temperature=0), 'tracker.csv', verbose=True)
 
-@app.route('/')
-def home():
-    llm = OpenAI(temperature=0.9)
-    text = "What would be a good company name a company that makes colorful socks?"
+@app.route('/api', methods=['POST'])
+def process_query():
+    user_input = request.json['query']
+    response = agent.run(user_input)
+    return jsonify({"response": response})
 
-    return llm(text)
+if __name__ == '__main__':
+    app.run(debug=True)
