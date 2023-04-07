@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request, jsonify
 from langchain.agents import create_csv_agent
 from langchain.llms import OpenAI
